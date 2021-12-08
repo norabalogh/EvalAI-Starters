@@ -59,23 +59,18 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
         public_df = solution_df.loc[solution_df.Usage=="Public", :]
         mae_public = sm.mean_absolute_error(public_df["fuel_consumption_sum"], public_df["predicted_fuel_consumption_sum"])
         rmse_public = sm.mean_squared_error(public_df["fuel_consumption_sum"], public_df["predicted_fuel_consumption_sum"])
+
+        print("Evaluating for Private Phase")
+        private_df = solution_df.loc[solution_df.Usage=="Private", :]
+        mae_private = sm.mean_absolute_error(private_df["fuel_consumption_sum"], private_df["predicted_fuel_consumption_sum"])
+        rmse_private = sm.mean_squared_error(private_df["fuel_consumption_sum"], private_df["predicted_fuel_consumption_sum"])
         output["result"] = [
             {
                 "public_split": {
                     "MAE": mae_public,
                     "RMSE": rmse_public
                 }
-            }
-        ]
-        # To display the results in the result file
-        output["submission_result"] = output["result"][0]["public_split"]
-        print("Completed evaluation for Public Phase")
-    elif phase_codename == "private":
-        print("Evaluating for Private Phase")
-        private_df = solution_df.loc[solution_df.Usage=="Private", :]
-        mae_private = sm.mean_absolute_error(private_df["fuel_consumption_sum"], private_df["predicted_fuel_consumption_sum"])
-        rmse_private = sm.mean_squared_error(private_df["fuel_consumption_sum"], private_df["predicted_fuel_consumption_sum"])
-        output["result"] = [
+            },
             {
                 "private_split": {
                     "MAE": mae_private,
@@ -84,8 +79,8 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
             }
         ]
         # To display the results in the result file
-        output["submission_result"] = output["result"][0]
-        print("Completed evaluation for Private Phase")
+        output["submission_result"] = output["result"][0]["public_split"]
+        print("Completed evaluation.")
     return output
 
 # if __name__ == "__main__":
